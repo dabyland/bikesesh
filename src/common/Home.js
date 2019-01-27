@@ -2,9 +2,18 @@ import React, { Component } from "react";
 import styled from "react-emotion";
 import ExpansionPanel from "./ExpansionPanel";
 import Button from "@material-ui/core/Button";
+import TrailFilter from "./TrailFilter";
 
 const Container = styled("div")`
   display: flex;
+`;
+
+const Inputs = styled("div")`
+  position: "absolute";
+  justify-content: "center";
+  align-items: "center";
+  background-color: "pink";
+  margin: 0 auto;
 `;
 
 const button = {
@@ -14,6 +23,7 @@ const button = {
 class Home extends Component {
   constructor() {
     super();
+
     this.state = {
       latitude: null,
       longitude: null,
@@ -22,12 +32,28 @@ class Home extends Component {
     };
   }
 
-  componentDidMount() {
+  showTrails() {
+    if (this.state.latitude && this.state.longitude) {
+      fetch(
+        `https://www.mtbproject.com/data/get-trails?lat=${this.state.latitude}&lon=${
+          this.state.longitude
+        }&maxDistance=10&key=200254031-7576673c2385abe3db498ef8c9ec9e60`
+      )
+        .then(results => results.json())
+        .then(data => {
+          const trails = data.trails.map(trail => trail);
+          this.setState({ trails: trails });
+        });
+    }
+  }
+
+  componentWillMount() {
     navigator.geolocation.getCurrentPosition(
       position => {
         this.setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          loading: false,
           error: null
         });
       },
@@ -36,39 +62,22 @@ class Home extends Component {
     );
   }
 
-  showTrails() {
-    fetch(
-      `https://www.mtbproject.com/data/get-trails?lat=${this.state.latitude}&lon=${
-        this.state.longitude
-      }&maxDistance=10&key=200254031-7576673c2385abe3db498ef8c9ec9e60`
-    )
-      .then(results => results.json())
-      .then(data => {
-        let trails = data.trails.map(trail => trail);
-        this.setState({ trails: trails });
-        console.log("state", this.state.trails);
-      });
-  }
-
   render() {
     const { trails } = this.state;
 
     return (
       <Container>
-        <div>
-          {this.state.latitude ? (
-            <Button
-              style={button}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                this.showTrails();
-              }}
-            >
-              Show Trails Nearby
-            </Button>
-          ) : null}
-        </div>
+        <Inputs>
+          <Button
+            style={button}
+            variant="contained"
+            color="primary"
+            onClick={this.showTrails.bind(this)}
+          >
+            Show Nearby Trails
+          </Button>
+          {trails.length >= 1 ? <TrailFilter trails={trails} /> : null}
+        </Inputs>
         <ExpansionPanel trails={trails} />
       </Container>
     );

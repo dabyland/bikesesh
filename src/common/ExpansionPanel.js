@@ -25,7 +25,7 @@ function SimpleExpansionPanel(props) {
     <div className={classes.root}>
       {trails &&
         trails.map(trail => (
-          <ExpansionPanel>
+          <ExpansionPanel key={trail.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography key={trail.id} className={classes.heading}>
                 {trail.name + " - " + trail.location}
@@ -33,13 +33,11 @@ function SimpleExpansionPanel(props) {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                <header>Trail Information:</header>
-                <ul>
-                  <li>Condition Status: {trail.conditionStatus}</li>
-                  <li>Condition Details: {trail.conditionDetails}</li>
-                  <li>Last Checked: {trail.conditionDate}</li>
-                  <li>Difficulty: {trail.difficulty}</li>
-                </ul>
+                Trail Information:
+                <li>Condition Status: {trail.conditionStatus}</li>
+                <li>Condition Details: {trail.conditionDetails}</li>
+                <li>Last Checked: {trail.conditionDate}</li>
+                <li>Difficulty: {trail.difficulty}</li>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
@@ -50,7 +48,7 @@ function SimpleExpansionPanel(props) {
 
 SimpleExpansionPanel.propTypes = {
   classes: PropTypes.object.isRequired,
-  trails: PropTypes.object
+  trails: PropTypes.array
 };
 
 export default withStyles(styles)(SimpleExpansionPanel);
