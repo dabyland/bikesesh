@@ -21,11 +21,13 @@ class TrailFilter extends Component {
     this.setState({ anchorEl: null });
 
     // TODO: Do some sorting on trails
-    // this.props.trails.sort((a, b) => parseFloat(b.starVotes) - parseFloat(a.starVotes));
+    // props.trails.sort((a, b) => parseFloat(b.starVotes) - parseFloat(a.starVotes));
   };
 
   render() {
     const { anchorEl } = this.state;
+
+    console.log("render");
 
     return (
       <div>
